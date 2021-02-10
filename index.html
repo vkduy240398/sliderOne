@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="slides">
+            <div class="slide">1</div>
+            <div class="slide">2</div>
+            <div class="slide">3</div>
+        </div>
+        <div class="nextBtn">Next</div>
+        <div class="prevBtn">Prev</div>
+    </div>
+</body>
+<script>
+    var container = document.querySelector('.container');
+    var slide = document.querySelector('.slides');
+    var slides = document.querySelectorAll('.slide');
+    var slideWidth = slides[0].clientWidth;
+    var nextBtn = document.querySelector('.nextBtn');
+    var prevBtn = document.querySelector('.prevBtn');
+    var firstclone = slides[0].cloneNode(true);
+    var lastclone = slides[slides.length - 1].cloneNode(true);
+    firstclone.id = 'firstclone';
+    lastclone.id = 'lastclone';
+    slide.append(firstclone);
+    slide.prepend(lastclone);
+    const interval = 2000;
+    var index = 1;
+    var slide_clear;
+    slide.style.transform = `translateX(${-slideWidth*index}px)`;
+
+    const start =()=>{
+ slide_clear =  setInterval(() => {
+            MoveNextSlides();
+        }, interval);
+    }
+    const MoveNextSlides = ()=>{
+        if (index >= slides.length - 1) return;
+        index++;
+        slide.style.transform = `translateX(${-slideWidth*index}px)`;
+        slide.style.transition = `0.5s`;
+    }
+    const MovePrevSlides = ()=>{
+        if (index <= 0) return;
+        index--;
+        slide.style.transform = `translateX(${-slideWidth*index}px)`;
+        slide.style.transition = `0.5s`;
+    };
+    slide.addEventListener("transitionend",()=>{
+        slides = document.querySelectorAll('.slide');
+        if (slides[index].id === firstclone.id) {
+            index =1;
+            slide.style.transform = `translateX(${-slideWidth*index}px)`;
+            slide.style.transition = `none`;
+        }
+        if (slides[index].id === lastclone.id) {
+            index =slides.length - 2;
+            slide.style.transform = `translateX(${-slideWidth*index}px)`;
+            slide.style.transition = `none`;
+        }
+    });
+    nextBtn.addEventListener("click",MoveNextSlides);
+    prevBtn.addEventListener("click",MovePrevSlides);
+    container.addEventListener("mouseenter",()=>{
+        clearInterval(slide_clear);
+    });
+    container.addEventListener("mouseleave",start);
+    start();
+</script>
+</html>
